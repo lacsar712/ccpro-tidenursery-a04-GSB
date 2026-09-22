@@ -8,6 +8,7 @@ import Hatcheries from './pages/Hatcheries'
 import Ponds from './pages/Ponds'
 import WaterSamples from './pages/WaterSamples'
 import FeedEvents from './pages/FeedEvents'
+import LarvaInventories from './pages/LarvaInventories'
 
 function PrivateRoute({ children }: { children: ReactNode }) {
   if (!getToken()) return <Navigate to="/login" replace />
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="ponds" element={<Ponds />} />
         <Route path="water-samples" element={<WaterSamples />} />
         <Route path="feed-events" element={<FeedEvents />} />
+        <Route path="larva-inventories" element={<LarvaInventories />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

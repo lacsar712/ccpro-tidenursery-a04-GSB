@@ -41,6 +41,23 @@ export type FeedEvent = {
   operatorName: string
 }
 
+export type LarvaInventory = {
+  id: number
+  pondId: number
+  countDate: string
+  countA: number
+  countB: number
+  notes?: string | null
+  sealedAt?: string | null
+}
+
+export type ReconcileResult = {
+  hatcheryId: number
+  sealedCount: number
+  unsealedCount: number
+  difference: number
+}
+
 export type DashboardStats = {
   pondTotal: number
   quarantineCount: number

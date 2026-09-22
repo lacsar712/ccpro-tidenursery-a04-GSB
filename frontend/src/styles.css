@@ -278,6 +278,45 @@ th {
   color: #1a7a6c;
 }
 
+.panel-title {
+  margin: 0 0 10px;
+  color: var(--sea-deep);
+}
+
+.recon-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.recon-row:last-child {
+  border-bottom: none;
+}
+
+.row-actions {
+  display: inline-flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.cell-input {
+  width: 96px;
+  padding: 6px 8px;
+}
+
+.ok-text {
+  color: #1a7a6c;
+  font-size: 13px;
+}
+
+.err-text {
+  color: var(--danger);
+  font-size: 13px;
+}
+
 .login-page {
   min-height: 100vh;
   display: grid;

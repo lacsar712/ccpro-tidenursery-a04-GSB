@@ -4,6 +4,7 @@ from app.auth import hash_password
 from app.database import SessionLocal
 from app.models.feed_event import FeedEvent
 from app.models.hatchery import Hatchery
+from app.models.larva_inventory import LarvaInventory
 from app.models.pond import Pond
 from app.models.user import User
 from app.models.water_sample import WaterSample
@@ -133,6 +134,35 @@ def seed() -> None:
             print("Seed data inserted.")
         else:
             print("Seed skipped (data exists).")
+
+        if db.query(LarvaInventory).count() == 0:
+            pond_a01 = db.query(Pond).filter(Pond.pond_code == "A-01").first()
+            pond_b01 = db.query(Pond).filter(Pond.pond_code == "B-01").first()
+            if pond_a01 and pond_b01:
+                # 盘点日按东八区日历日切分；不同育苗场允许同一盘点日
+                count_day = datetime.now(timezone(timedelta(hours=8))).date()
+                db.add_all(
+                    [
+                        # 差额过大：|100-82|=18 > 100*10%，封盘应返回 409
+                        LarvaInventory(
+                            pond_id=pond_a01.id,
+                            count_date=count_day,
+                            count_a=100,
+                            count_b=82,
+                            notes="双人计数差额过大，需复测后再封盘",
+                        ),
+                        # 可封成功：|120-114|=6 ≤ 120*10%
+                        LarvaInventory(
+                            pond_id=pond_b01.id,
+                            count_date=count_day,
+                            count_a=120,
+                            count_b=114,
+                            notes="双人计数吻合，可封盘",
+                        ),
+                    ]
+                )
+                db.commit()
+                print("Larva inventory seed inserted.")
     finally:
         db.close()
 

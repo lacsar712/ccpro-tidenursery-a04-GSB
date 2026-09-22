@@ -46,11 +46,17 @@ docker compose up --build
 3. **Pond 育苗塘**：`hatcheryId`、`pondCode`、`species`、`volumeM3`、`status(stocked|dry|quarantine)`；同场 `pondCode` 唯一
 4. **WaterSample 水质样**：`pondId`、`sampledAt`、`tempC`、`salinityPpt`、`doMgL`、`ph`、`notes`；`doMgL > 0` 且 `ph ∈ [6,9]`，否则返回 **400**
 5. **FeedEvent 投喂**：`pondId`、`fedAt`、`feedType`、`amountKg`、`operatorName`
-6. **Dashboard**：塘总数、quarantine 数、近 24h 采样数、近 7 日投喂总量 kg
+6. **LarvaInventory 幼体盘点**：`pondId`、`countDate`、`countA`、`countB`（万尾，非负整数）、`notes`（可空）、`sealedAt`（可空）
+   - 同塘同日唯一（`pondId + countDate`），盘点日按**东八区**日历日切分（缺省取东八区当天）；不同育苗场允许同一盘点日，但盘点挂在塘口上、不得串场
+   - 未封盘时可改计数（`PUT`）；封盘后不可再改、不可删（**409**）
+   - 封盘 `POST /api/larva-inventories/{id}/seal`：`|甲-乙| ≤ max(甲,乙) × 10%` 且 `max(甲,乙) ≥ 1`，否则 **409** 且 `sealedAt` 保持为空
+   - 对账 `GET /api/larva-inventories/reconcile?hatcheryId=`：按育苗场汇总已封/未封盘点数，存在未封盘（差额非零）时 **409**，全部封盘才返回平衡结果
+   - 种子数据含两份当日盘点：A-01 差额过大（100 vs 82，封盘 409）、B-01 可封成功（120 vs 114）
+7. **Dashboard**：塘总数、quarantine 数、近 24h 采样数、近 7 日投喂总量 kg
 
 ## 前端页面
 
-Login · Dashboard · Hatcheries · Ponds · WaterSamples · FeedEvents
+Login · Dashboard · Hatcheries · Ponds · WaterSamples · FeedEvents · LarvaInventories（幼体盘点）
 
 ## 本地开发（可选）
 
