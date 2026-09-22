@@ -4,6 +4,7 @@ from app.auth import hash_password
 from app.database import SessionLocal
 from app.models.feed_event import FeedEvent
 from app.models.hatchery import Hatchery
+from app.models.larva_count import LarvaCount
 from app.models.pond import Pond
 from app.models.user import User
 from app.models.water_sample import WaterSample
@@ -126,6 +127,27 @@ def seed() -> None:
                         feed_type="微藻饲料",
                         amount_kg=2.5,
                         operator_name="水质技术员",
+                    ),
+                ]
+            )
+            # 盘点日按东八区日历日切分；两份种子分属不同育苗场、同一盘点日：
+            # 一份甲乙差额过大（封盘应 409），一份在 10% 容差内（可封盘成功）
+            cn_today = now.astimezone(timezone(timedelta(hours=8))).date()
+            db.add_all(
+                [
+                    LarvaCount(
+                        pond_id=p1.id,
+                        count_date=cn_today,
+                        count_a=100,
+                        count_b=82,
+                        notes="样例：甲乙差额过大，封盘不通过",
+                    ),
+                    LarvaCount(
+                        pond_id=p3.id,
+                        count_date=cn_today,
+                        count_a=100,
+                        count_b=95,
+                        notes="样例：差额在容差内，可封盘",
                     ),
                 ]
             )

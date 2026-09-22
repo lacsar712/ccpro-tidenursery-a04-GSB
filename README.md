@@ -46,11 +46,12 @@ docker compose up --build
 3. **Pond 育苗塘**：`hatcheryId`、`pondCode`、`species`、`volumeM3`、`status(stocked|dry|quarantine)`；同场 `pondCode` 唯一
 4. **WaterSample 水质样**：`pondId`、`sampledAt`、`tempC`、`salinityPpt`、`doMgL`、`ph`、`notes`；`doMgL > 0` 且 `ph ∈ [6,9]`，否则返回 **400**
 5. **FeedEvent 投喂**：`pondId`、`fedAt`、`feedType`、`amountKg`、`operatorName`
-6. **Dashboard**：塘总数、quarantine 数、近 24h 采样数、近 7 日投喂总量 kg
+6. **LarvaCount 幼体盘点**：`pondId`、`countDate`、`countA`、`countB`、`notes(可空)`、`sealedAt(可空)`；盘点挂塘口、双人计数（甲/乙，单位万尾，均为非负整数）；同塘同日唯一（不同育苗场允许同一盘点日，不得串场），盘点日按东八区日历日切分；未封盘时可改计数；**封盘** `POST /api/larva-counts/{id}/seal`：`|甲-乙| ≤ max(甲,乙) × 10%` 且 `max(甲,乙) ≥ 1`，否则返回 **409** 且 `sealedAt` 保持为空，封盘成功后不可再改计数；**对账** `GET /api/larva-counts/reconcile`：按育苗场汇总已封盘数与未封盘数，核对后差额（未封盘数）必须为零
+7. **Dashboard**：塘总数、quarantine 数、近 24h 采样数、近 7 日投喂总量 kg
 
 ## 前端页面
 
-Login · Dashboard · Hatcheries · Ponds · WaterSamples · FeedEvents
+Login · Dashboard · Hatcheries · Ponds · WaterSamples · FeedEvents · LarvaCounts（幼体盘点）
 
 ## 本地开发（可选）
 
